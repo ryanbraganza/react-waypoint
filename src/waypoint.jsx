@@ -20,6 +20,7 @@ const defaultProps = {
   onLeave() { },
   onPositionChange() { },
   fireOnRapidScroll: true,
+  alwaysFireOnPositionChange: false,
 };
 
 /**
@@ -175,11 +176,6 @@ export default class Waypoint extends React.Component {
     // Save previous position as early as possible to prevent cycles
     this._previousPosition = currentPosition;
 
-    if (previousPosition === currentPosition) {
-      // No change since last trigger
-      return;
-    }
-
     const callbackArg = {
       currentPosition,
       previousPosition,
@@ -189,6 +185,14 @@ export default class Waypoint extends React.Component {
       viewportTop: bounds.viewportTop,
       viewportBottom: bounds.viewportBottom,
     };
+    if (previousPosition === currentPosition || ) {
+      if (this.props.alwaysFireOnPositionChange) {
+        this.props.onPositionChange.call(this, callbackArg);
+      }
+      // No change since last trigger
+      return;
+    }
+
     this.props.onPositionChange.call(this, callbackArg);
 
     if (currentPosition === constants.inside) {
